@@ -1,0 +1,137 @@
+select gjb.JE_BATCH_ID,gjb.name,gjh.context,gjh.attribute1,gjc.USER_JE_CATEGORY_NAME, fu.user_name 
+ from  apps.gl_je_batches gjb, apps.gl_je_headers gjh, apps.gl_je_categories gjc , apps.fnd_user fu
+where 1=1
+and fu.employee_id = gjh.attribute1
+and gjb.JE_BATCH_ID = gjh.JE_BATCH_ID
+and gjc.JE_CATEGORY_NAME  = gjh.je_category
+and gjh.actual_flag = 'A'
+--and org_id = 82
+and trunc(gjb.creation_date) = trunc(sysdate)
+order by gjb.je_batch_id desc;
+
+
+
+
+Lookup Name: QD_DOHA_GL_JOURNAL_POST
+
+Disable Post Button for Actual - Folder Level
+Form: GLXJEENT
+Trigger Event: WHEN-NEW-RECORD-INSTANCE
+Trigger Object: FOLDER
+Condition:
+1=1
+and ${item.folder.show_actual_flag.value} = 'Actual'
+and fnd_global.user_name not in (select fu.user_name from  apps.fnd_lookup_values_vl a, apps.fnd_user fu where lookup_type = 'QD_DOHA_GL_JOURNAL_POST' and fu.user_name = a.description and fu.user_id = ${item.folder.created_by.value})
+and fnd_global.user_name not in (select fu.user_name from  apps.fnd_lookup_values_vl a, apps.fnd_user fu where lookup_type = 'QD_DOHA_GL_JOURNAL_POST' and fu.user_name = a.description)
+and ${item.folder.ledger_id.value} in (select SET_OF_BOOKS_ID from  apps.hr_operating_units hou where hou.business_group_id = 81 and SET_OF_BOOKS_ID not in (2241,2431))
+Actions:
+Target Object: CONTROL.FOLDER_POST
+
+
+Disable Post Button for Actual - Header Level
+Form: GLXJEENT
+Trigger Event: WHEN-NEW-RECORD-INSTANCE
+Trigger Object: Header
+Condition:
+1=1
+and ${item.header.show_actual_flag.value} = 'Actual'
+and fnd_global.user_name not in (select fu.user_name from  apps.fnd_lookup_values_vl a, apps.fnd_user fu where lookup_type = 'QD_DOHA_GL_JOURNAL_POST' and fu.user_name = a.description and fu.user_id = ${item.header.created_by.value})
+and fnd_global.user_name not in (select fu.user_name from  apps.fnd_lookup_values_vl a, apps.fnd_user fu where lookup_type = 'QD_DOHA_GL_JOURNAL_POST' and fu.user_name = a.description)
+and ${item.header.ledger_id.value} in (select SET_OF_BOOKS_ID from  apps.hr_operating_units hou where hou.business_group_id = 81 and SET_OF_BOOKS_ID not in (2241,2431))
+Actions:
+Target Object: CONTROL.HEADER_POST
+
+
+Disable Post Button for Actual - Batch Level
+Form: GLXJEENT
+Trigger Event: WHEN-NEW-RECORD-INSTANCE
+Trigger Object: Batch
+Condition:
+1=1
+and ${item.batch.show_actual_flag.value} = 'Actual'
+and fnd_global.user_name not in (select fu.user_name from  apps.fnd_lookup_values_vl a, apps.fnd_user fu where lookup_type = 'QD_DOHA_GL_JOURNAL_POST' and fu.user_name = a.description and fu.user_id = ${item.batch.created_by.value})
+and fnd_global.user_name not in (select fu.user_name from  apps.fnd_lookup_values_vl a, apps.fnd_user fu where lookup_type = 'QD_DOHA_GL_JOURNAL_POST' and fu.user_name = a.description)
+and ${item.batch.org_id.value} in (select ORGANIZATION_ID from  apps.hr_operating_units hou where hou.business_group_id = 81 and SET_OF_BOOKS_ID not in (2241,2431))
+Actions:
+Target Object: BATCH.BATCH_POST
+
+
+Disable Post Button for Budget - Folder Level
+Form: GLXJEENT
+Trigger Event: WHEN-NEW-RECORD-INSTANCE
+Trigger Object: FOLDER
+Condition:
+1=1
+and ${item.folder.show_actual_flag.value} = 'Budget'
+and fnd_global.user_name not in (select fu.user_name from  apps.fnd_lookup_values_vl a, apps.fnd_user fu where lookup_type = 'QD_DOHA_GL_BUD_JOURNAL_POST' and fu.user_name = a.description)
+and ${item.folder.ledger_id.value} in (select SET_OF_BOOKS_ID from  apps.hr_operating_units hou where hou.business_group_id = 81 and SET_OF_BOOKS_ID not in (2241,2431))
+Actions:
+Target Object: CONTROL.FOLDER_POST
+Target Object: CONTROL.REVIEW_HEADER
+Target Object: CONTROL.REVIEW_BATCH
+Target Object: CONTROL.FOLDER_REVERSE
+Target Object: CONTROL.FOLDER_APPROVE
+
+
+Disable Post Button for Budget - Header Level
+Form: GLXJEENT
+Trigger Event: WHEN-NEW-RECORD-INSTANCE
+Trigger Object: Header
+Condition:
+1=1
+and ${item.header.show_actual_flag.value} = 'Budget'
+and fnd_global.user_name not in (select fu.user_name from  apps.fnd_lookup_values_vl a, apps.fnd_user fu where lookup_type = 'QD_DOHA_GL_BUD_JOURNAL_POST' and fu.user_name = a.description)
+and ${item.header.ledger_id.value} in (select SET_OF_BOOKS_ID from  apps.hr_operating_units hou where hou.business_group_id = 81 and SET_OF_BOOKS_ID not in (2241,2431))
+Actions:
+Target Object: CONTROL.HEADER_POST
+
+
+Disable Post Button for Budget - Batch Level
+Form: GLXJEENT
+Trigger Event: WHEN-NEW-RECORD-INSTANCE
+Trigger Object: Batch
+Condition:
+1=1
+and ${item.batch.show_actual_flag.value} = 'Budget'
+and fnd_global.user_name not in (select fu.user_name from  apps.fnd_lookup_values_vl a, apps.fnd_user fu where lookup_type = 'QD_DOHA_GL_BUD_JOURNAL_POST' and fu.user_name = a.description)
+and ${item.header.ledger_id.value} in (select SET_OF_BOOKS_ID from  apps.hr_operating_units hou where hou.business_group_id = 81 and SET_OF_BOOKS_ID not in (2241,2431))
+Actions:
+Target Object: BATCH.BATCH_POST
+
+
+
+Disable UnApprove Button - Folder Level
+Form: GLXJEENT
+Trigger Event: WHEN-NEW-RECORD-INSTANCE
+Trigger Object: FOLDER
+Condition:
+1=1
+and ${item.folder.SHOW_APPROVAL_STATUS.value} = 'Approved'
+and ${item.folder.show_batch_status.value} = 'Unposted'
+Processing Mode: Both
+Actions:
+Target Object: CONTROL.FOLDER_UNAPPROVE
+
+Disable UnApprove Button - Header Level
+Form: GLXJEENT
+Trigger Event: WHEN-NEW-RECORD-INSTANCE
+Trigger Object: HEADER
+Condition:
+1=1
+and ${item.Header.SHOW_APPROVAL_STATUS.value} = 'Approved'
+and ${item.header.show_batch_status.value} = 'Unposted'
+Processing Mode: Both
+Actions:
+Target Object: CONTROL.header_UNAPPROVE
+
+Disable UnApprove Button - Batch Level
+Form: GLXJEENT
+Trigger Event: WHEN-NEW-RECORD-INSTANCE
+Trigger Object: BATCH
+Condition:
+1=1
+and ${item.batch.show_status.value} =  'Unposted'
+and ${item.batch.show_approval_status.value} = 'Approved'
+Processing Mode: Both
+Actions:
+Target Object: CONTROL.BATCH_UNAPPROVE
