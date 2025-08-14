@@ -1,0 +1,1 @@
+So basically me and my friends have created a new app with html and CSS for a school project. This app is MindNest. We made this app so that we can relieve people from the stress caused by socil media.
